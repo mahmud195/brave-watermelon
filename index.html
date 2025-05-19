@@ -1,196 +1,126 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>البطيخة الشجاعة</title>
-  <link rel="icon" type="image/x-icon" href="Logo.png">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      background-color: #444;
-      overflow: hidden;
-    }
-    #unity-container {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-    }
-    #unity-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      background-color: #444;
-    }
-    #unity-loading-bar {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      z-index: 10;
-      pointer-events: none;
-    }
-    #unity-logo1 {
-      width: 40vw;
-      max-width: 280px;
-      height: auto;
-    }
-    #unity-progress-bar {
-      width: 764px;
-      max-width: 90vw;
-      height: 40px;
-      margin-top: 60px;
-      background: url('bar.png') no-repeat center center;
-      background-size: 100% 100%;
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-      transform: scale(0.7);
-      transform-origin: top center;
-    }
-    #unity-progress-bar-fill {
-      position: absolute;
-      top: 7px;
-      left: 6px;
-      height: calc(100% - 14px);
-      width: 0%;
-      background-color: #55CAC2;
-      transition: width 0.3s ease;
-      border-radius: 20px 0 0 20px;
-    }
-    @media (max-width: 768px) {
-      #unity-logo1 { width: 50vw; max-width: 200px; }
-      #unity-progress-bar { width: 550px; height: 30px; margin-top: 0px; }
-      #unity-progress-bar-fill { border-radius: 5px 0 0 5px; }
-    }
-  </style>
-<link rel="icon" type="image/x-icon" href="Logo.png">
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <title>البطيخة الشجاعة</title>
+    <style>
+      html, body {
+        background-size: auto;
+        background-color: #444444;
+      }
+      #unity-loading-bar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        z-index: 10;
+        pointer-events: none;
+      }
 
-<body>
-  <div id="unity-container">
-    <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1"></canvas>
+      #unity-logo1 {
+        width: 40vw;
+        max-width: 280px;
+        height: auto;
+      }
+
+      #unity-progress-bar {
+        width: 764px;
+        max-width: 90vw;
+        height: 40px;
+        margin-top: 60px;
+        background: url('bar.png') no-repeat center center;
+        background-size: 100% 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        transform: scale(0.7);
+        transform-origin: top center;
+      }
+
+      #unity-progress-bar-fill {
+        position: absolute;
+        top: 7px;
+        left: 6px;
+        height: calc(100% - 14px);
+        width: 0%;
+        background-color: #55CAC2;
+        transition: width 0.3s ease;
+        border-radius: 20px 0 0 20px;
+      }
+
+      @media (max-width: 768px) {
+        #unity-logo1 {
+          width: 50vw;
+          max-width: 200px;
+        }
+
+        #unity-progress-bar {
+          width: 550px;
+          height: 30px;
+          margin-top: 0px;
+        }
+
+        #unity-progress-bar-fill {
+          border-radius: 5px 0 0 5px;
+        }
+      }
+    </style>
+  <link rel="icon" type="image/x-icon" href="Logo.png">
+</head>
+  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1" style="width: 1920px; height: 1080px; background: #231F20"></canvas>
+
+    <!-- ✅ Added Loading Logo and Progress Bar -->
     <div id="unity-loading-bar">
       <img id="unity-logo1" src="logo1.png" alt="Loading Logo">
       <div id="unity-progress-bar">
         <div id="unity-progress-bar-fill"></div>
       </div>
     </div>
-  </div>
 
-  <script>
-    window.addEventListener("load", function () {
-      const canvas = document.querySelector("#unity-canvas");
-      const loadingBar = document.querySelector("#unity-loading-bar");
-      const progressBarFill = document.querySelector("#unity-progress-bar-fill");
-      const buildUrl = "Build";
+    <script src="Build/build.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
 
-      // Helper to check if file exists
-      function checkFileExists(url) {
-        return fetch(url, { method: "HEAD" }).then(res => res.ok).catch(() => false);
-      }
-
-      const upper = {
-        loader: buildUrl + "/Build.loader.js",
-        data: buildUrl + "/Build.data.unityweb",
-        framework: buildUrl + "/Build.framework.js.unityweb",
-        code: buildUrl + "/Build.wasm.unityweb"
-      };
-
-      const lower = {
-        loader: buildUrl + "/build.loader.js",
-        data: buildUrl + "/build.data.unityweb",
-        framework: buildUrl + "/build.framework.js.unityweb",
-        code: buildUrl + "/build.wasm.unityweb"
-      };
-
-      // Try to detect correct casing
-      checkFileExists(upper.data).then(useUpper => {
-        const files = useUpper ? upper : lower;
-
-        const config = {
-          dataUrl: files.data,
-          frameworkUrl: files.framework,
-          codeUrl: files.code,
-          streamingAssetsUrl: "StreamingAssets",
-          companyName: "AQTAR",
-          productName: "البرتقالة الذكية",
-          productVersion: "1.0"
-        };
-
-        loadingBar.style.display = "flex";
-
-        const script = document.createElement("script");
-        script.src = files.loader;
-        script.onload = () => {
-          createUnityInstance(canvas, config, (progress) => {
-            progressBarFill.style.width = (progress * 100) + "%";
-          }).then(() => {
-            loadingBar.style.display = "none";
-          }).catch((message) => {
-            alert("Unity load failed: " + message);
-          });
-        };
-
-        document.body.appendChild(script);
-      });
-    });
-  </script>
-
-  <!-- Fullscreen behavior on mobile -->
-  <script>
-    function isMobileDevice() {
-      return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
-
-    function enterFullScreen() {
-      const elem = document.documentElement;
-      if (!document.fullscreenElement) {
-        if (elem.requestFullscreen) elem.requestFullscreen();
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-        else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
-        else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-      }
-    }
-
-    function forceFullScreenOnGameStart() {
-      if (isMobileDevice()) enterFullScreen();
-    }
-
-    window.addEventListener("click", forceFullScreenOnGameStart);
-    window.addEventListener("touchstart", forceFullScreenOnGameStart);
-    window.addEventListener("resize", function () {
-      if (window.innerWidth > window.innerHeight) enterFullScreen();
-    });
-
-    // Mobile layout fix
-    document.body.style.overflow = 'hidden';
-    window.addEventListener("DOMContentLoaded", function () {
-      const canvas = document.querySelector("#unity-canvas");
-      if (isMobileDevice() && canvas) {
-        canvas.style.position = "absolute";
-        canvas.style.top = "50%";
-        canvas.style.left = "50%";
-        canvas.style.transform = "translate(-50%, -50%)";
-        canvas.style.width = "100vw";
-        canvas.style.maxHeight = "100vh";
-      } else if (canvas) {
+        var canvas = document.querySelector("#unity-canvas");
         canvas.style.width = "100%";
-        canvas.style.height = "100vh";
-        canvas.style.background = "#231F20";
-      }
-    });
-  </script>
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
 
+        document.body.style.textAlign = "left";
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        arguments: [],
+        dataUrl: "Build/build.data.unityweb",
+        frameworkUrl: "Build/build.framework.js.unityweb",
+        codeUrl: "Build/build.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "AQTAR",
+        productName: "البطيخة الشجاعة",
+        productVersion: "1.0"
+      }, (progress) => {
+        // ✅ Update progress bar fill
+        document.getElementById("unity-progress-bar-fill").style.width = (progress * 100) + "%";
+      }).then(() => {
+        // ✅ Hide loading bar when done
+        document.getElementById("unity-loading-bar").style.display = "none";
+      }).catch((message) => {
+        alert("Unity load failed: " + message);
+      });
+    </script>
+  
                 <script>
                     document.body.style.overflow = 'hidden';
                     // Mobile viewport settings
